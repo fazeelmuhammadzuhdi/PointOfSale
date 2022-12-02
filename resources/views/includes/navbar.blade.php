@@ -11,10 +11,13 @@
      <ul class="navbar-nav ml-auto">
          <!-- Navbar Search -->
          <li class="nav-item">
-             <a class="nav-link" href="{{ url('#') }}" role="button">
-                 <i class="nav-icon fas fa-sign-out-alt"> Logout</i>
+             <a class="nav-link" role="button">
+                 <i class="nav-icon fas fa-sign-out-alt" onclick="$('#logout-form').submit()"> Logout</i>
              </a>
          </li>
      </ul>
  </nav>
- <!-- /.navbar -->
+
+ <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none">
+     @csrf
+ </form>

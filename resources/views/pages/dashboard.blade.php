@@ -1,9 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('sub-judul', 'Dashboard')
 @section('content')
 
     <section class="content">
-        <h1>HALOs</h1>
         <!-- Default box -->
         <div class="card">
             <div class="card-header">

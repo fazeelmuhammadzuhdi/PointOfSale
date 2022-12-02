@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KategoriController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('layouts.app');
-// });
+Route::get('/', fn () => redirect()->route('login'));
 
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard-statistik', [DashboardController::class, 'dashboard'])->name('dashboard-statistik');
+});
 
-Route::get('/', [DashboardController::class, 'index']);
+Route::resource('kategori', KategoriController::class);

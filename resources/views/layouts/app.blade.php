@@ -1,49 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title')</title>
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-    {{-- Style --}}
-    @stack('before-style')
-    @include('includes.style')
-    @stack('before-style')
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
-</head>
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<body class="hold-transition sidebar-mini">
-    <!-- Site wrapper -->
-    <div class="wrapper">
+        <!-- Styles -->
+        @livewireStyles
+    </head>
+    <body class="font-sans antialiased">
+        <x-jet-banner />
 
-        {{-- Navbar --}}
-        @include('includes.navbar')
-        {{-- Sidebar --}}
-        @include('includes.sidebar')
+        <div class="min-h-screen bg-gray-100">
+            @livewire('navigation-menu')
 
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>@yield('sub-judul')</h1>
-                        </div>
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
                     </div>
-                </div>
-            </section>
-            {{-- content --}}
-            @yield('content')
+                </header>
+            @endif
+
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
         </div>
-        @include('includes.footer')
-    </div>
-    {{-- script --}}
-    @stack('before-script')
-    @include('includes.script')
-    @stack('after-script')
 
-</body>
+        @stack('modals')
 
+        @livewireScripts
+    </body>
 </html>

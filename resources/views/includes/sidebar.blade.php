@@ -14,7 +14,7 @@
                  <img src="{{ asset('/') }}dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
              </div>
              <div class="info">
-                 <a href="#" class="d-block">Alexander Pierce</a>
+                 <a href="#" class="d-block">{{ Auth::user()->name }}</a>
              </div>
          </div>
 
@@ -26,7 +26,7 @@
                  data-accordion="false">
                  <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                 <a href="#" class="nav-link">
+                 <a href="{{ route('dashboard-statistik') }}" class="nav-link">
                      <i class="fas fa-tachometer-alt text-white"></i>
                      <p>
                          Dashboard
@@ -43,7 +43,7 @@
                      </a>
                      <ul class="nav nav-treeview">
                          <li class="nav-item">
-                             <a href="#" class="nav-link">
+                             <a href="{{ route('kategori.index') }}" class="nav-link">
 
                                  <i class="fa fa-cube" aria-hidden="true"></i>
                                  <p>Kategori</p>

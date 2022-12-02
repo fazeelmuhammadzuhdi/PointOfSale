@@ -10,4 +10,9 @@ class DashboardController extends Controller
     {
         return view('pages.dashboard');
     }
+
+    public function dashboard()
+    {
+        return view('pages.dashboard-statisik');
+    }
 }
