@@ -3,7 +3,7 @@
 @section('content')
 
     <section class="content">
-
+        <h1>HALOs</h1>
         <!-- Default box -->
         <div class="card">
             <div class="card-header">
