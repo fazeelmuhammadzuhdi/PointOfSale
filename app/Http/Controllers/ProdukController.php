@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produk;
 use Illuminate\Http\Request;
-use App\Models\Kategori;
 
-class KategoriController extends Controller
+class ProdukController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,12 +14,9 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $item = Kategori::all();
-        return view('kategori.index', [
-            'item' => $item
-        ]);
+        $item = Produk::all()->pluck('nama_kategori', 'id_kategori');
+        return view('produk.index', compact('item'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -28,10 +25,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        $item = Kategori::all();
-        return view('kategori.create', [
-            'item' => $item
-        ]);
+        //
     }
 
     /**
@@ -42,9 +36,7 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        // $data = $request->all();
-        Kategori::create($request->all());
-        return redirect()->route('kategori.index')->with('success', 'Berhasil Menambahkan Kategori');
+        //
     }
 
     /**
@@ -55,6 +47,7 @@ class KategoriController extends Controller
      */
     public function show($id)
     {
+        //
     }
 
     /**
@@ -65,10 +58,7 @@ class KategoriController extends Controller
      */
     public function edit($id)
     {
-        $item = Kategori::findOrFail($id);
-        return view('kategori.edit', [
-            'item' => $item,
-        ]);
+        //
     }
 
     /**
@@ -80,12 +70,7 @@ class KategoriController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $item = Kategori::findOrFail($id);
-
-        $item->update($data);
-
-        return redirect()->route('kategori.index');
+        //
     }
 
     /**
@@ -96,9 +81,6 @@ class KategoriController extends Controller
      */
     public function destroy($id)
     {
-        $item = Kategori::findOrFail($id);
-        $item->delete();
-
-        return redirect()->route('kategori.index')->with('success', 'Data Berhasil Di Hapus');
+        //
     }
 }

@@ -4,15 +4,8 @@
     <div class="card">
         <div class="card-header">
             <h1 class="card-title" style="font-weight: bold; font-size: 18px">KATEGORI</h1>
-
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                    <i class="fas fa-minus"></i>
-                </button>
-
-            </div>
         </div>
-        <!-- Page Heading -->
+
 
         <div class="card-body">
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -20,6 +13,11 @@
                     <i class="fas fa-plus fa-sm text-white"></i> Tambah Kategori
                 </a>
             </div>
+            @if (Session::has('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="py-12">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">

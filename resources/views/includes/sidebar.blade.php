@@ -50,7 +50,7 @@
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a href="#" class="nav-link">
+                             <a href="{{ route('produk.index') }}" class="nav-link">
                                  <i class="fa fa-cubes" aria-hidden="true"></i>
                                  <p>Product</p>
                              </a>
