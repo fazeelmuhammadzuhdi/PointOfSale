@@ -43,8 +43,13 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         // $data = $request->all();
-        Kategori::create($request->all());
-        return redirect()->route('kategori.index')->with('success', 'Berhasil Menambahkan Kategori');
+        $simpan =  Kategori::create($request->all());
+
+        if ($simpan == TRUE) {
+            return redirect()->route('kategori.index')->with('success', 'Data berhasil disimpan');
+        } else {
+            return redirect()->route('kategori.index')->with('error', 'Data gagal disimpan');
+        }
     }
 
     /**
@@ -83,9 +88,13 @@ class KategoriController extends Controller
         $data = $request->all();
         $item = Kategori::findOrFail($id);
 
-        $item->update($data);
+        $simpan = $item->update($data);
 
-        return redirect()->route('kategori.index');
+        if ($simpan == TRUE) {
+            return redirect()->route('kategori.index')->with('success', 'Data berhasil Di Update');
+        } else {
+            return redirect()->route('kategori.index')->with('error', 'Data gagal Update');
+        }
     }
 
     /**
@@ -97,8 +106,12 @@ class KategoriController extends Controller
     public function destroy($id)
     {
         $item = Kategori::findOrFail($id);
-        $item->delete();
+        $simpan = $item->delete();
 
-        return redirect()->route('kategori.index')->with('success', 'Data Berhasil Di Hapus');
+        if ($simpan == TRUE) {
+            return redirect()->route('kategori.index')->with('success', 'Data berhasil Di Hapus');
+        } else {
+            return redirect()->route('kategori.index')->with('error', 'Data gagal Hapus');
+        }
     }
 }

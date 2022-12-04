@@ -12,3 +12,4 @@
 <script src="{{ asset('/') }}plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="{{ asset('/') }}plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 <script src="{{ asset('/') }}plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="{{ asset('/') }}plugins/sweetalert2/sweetalert2.min.js"></script>
