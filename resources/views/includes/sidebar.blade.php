@@ -56,7 +56,7 @@
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a href="#" class="nav-link">
+                             <a href="{{ route('member.index') }}" class="nav-link">
                                  <i class="fa fa-id-card" aria-hidden="true"></i>
                                  <p>Member</p>
                              </a>
