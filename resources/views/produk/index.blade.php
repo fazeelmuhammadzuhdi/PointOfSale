@@ -13,10 +13,11 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover" id="myTable">
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Kode</th>
                                 <th>Nama Produk</th>
                                 <th>Kategori</th>
                                 <th>Merk</th>
@@ -32,6 +33,9 @@
                                 <tr>
 
                                     <td>{{ $loop->iteration }}</td>
+                                    <td><span class="badge badge-success">
+                                            {{ $isi->kode_produk }}
+                                        </span></td>
                                     <td>{{ $isi->nama_produk }}</td>
                                     <td>{{ $isi->kategori->nama_kategori }}</td>
                                     <td>{{ $isi->merk }}</td>
@@ -79,4 +83,10 @@
             })
         </script>
     @endif
+
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+        });
+    </script>
 @endpush

@@ -81,4 +81,10 @@
             })
         </script>
     @endif
+
+    <script>
+        $(document).ready(function() {
+            $('#table').DataTable();
+        });
+    </script>
 @endpush

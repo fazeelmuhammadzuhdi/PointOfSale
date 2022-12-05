@@ -19,16 +19,20 @@
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-6">
-                                {{-- <div class="form-group">
-                                    <label for="">Kode</label>
-                                    <input type="text" name="" class="form-control" placeholder="">
-                                </div> --}}
+                                <div class="form-group">
+                                    <label for="">Kode Produk</label>
+                                    <input type="text" name="" class="form-control" placeholder=""
+                                        value="{{ $produk->kode_produk }}" readonly>
+                                </div>
                                 <div class="form-group">
                                     <label for="">Nama Produk</label>
                                     <input type="text" name="nama_produk" id="nama_produk" class="form-control"
                                         placeholder="Inputkan Nama Produk" required autofocus
                                         value="{{ $produk->nama_produk }}">
                                 </div>
+
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Kategori</label>
                                     <select name="id_kategori" required class="form-control">
@@ -40,13 +44,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Merk</label>
-                                    <input type="text" name="merk" id="merk" class="form-control"
-                                        placeholder="Inputkan Merk" required value="{{ $produk->merk }}">
-                                </div>
+
                                 <div class="form-group">
                                     <label for="">Diskon</label>
                                     <input type="number" name="diskon" id="diskon" class="form-control"
@@ -70,6 +68,11 @@
                                     <label for="">Stok</label>
                                     <input type="number" name="stok" class="form-control" placeholder="Inputkan Stok"
                                         required value="{{ $produk->stok }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Merk</label>
+                                    <input type="text" name="merk" id="merk" class="form-control"
+                                        placeholder="Inputkan Merk" required value="{{ $produk->merk }}">
                                 </div>
                             </div>
                         </div>

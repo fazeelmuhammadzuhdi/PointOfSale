@@ -19,7 +19,8 @@
                             <div class="col-md-6">
                                 {{-- <div class="form-group">
                                     <label for="">Kode</label>
-                                    <input type="text" name="" class="form-control" placeholder="">
+                                    <input type="text" name="kode_produk" id="kode_produk" value="{{ $nomer }}"
+                                        class="form-control" placeholder="">
                                 </div> --}}
                                 <div class="form-group">
                                     <label for="">Nama Produk</label>
@@ -45,7 +46,7 @@
                                 <div class="form-group">
                                     <label for="">Diskon</label>
                                     <input type="number" name="diskon" id="diskon" class="form-control"
-                                        placeholder="Inputkan Diskon">
+                                        placeholder="Inputkan Diskon" value="0">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -64,8 +65,9 @@
                                 <div class="form-group">
                                     <label for="">Stok</label>
                                     <input type="number" name="stok" class="form-control" placeholder="Inputkan Stok"
-                                        required>
+                                        required value="0">
                                 </div>
+
                             </div>
                         </div>
                         <button type="submit" class="btn btn-success btn-block">Simpan</button>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use App\Models\Produk;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ProdukController extends Controller
@@ -26,11 +27,23 @@ class ProdukController extends Controller
      */
     public function create()
     {
+        // $now = Carbon::now();
+        // $thnBulan = $now->year . $now->month;
+        // $cek = Produk::count();
+        // if ($cek == 0) {
+        //     $urut = 100000000;
+        //     $nomer = 'P-' . $thnBulan . $urut;
+        // } else {
+        //     $ambil = Produk::all()->last();
+        //     $urut = (int)substr($ambil->nota, -8) + 1;
+        //     $nomer = 'P-' . $thnBulan . $urut;
+        // }
         $produk = Produk::all();
         $kategori = Kategori::orderBy('nama_kategori', 'asc')->get();
         return view('produk.create', [
             'produk' => $produk,
-            'kategori' => $kategori
+            'kategori' => $kategori,
+            // 'nomer' => $nomer
         ]);
     }
 
@@ -43,6 +56,8 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         // $data = $request->all();
+        $produk = Produk::latest()->first();
+        $request['kode_produk'] = 'P' . tambah_nol_didepan((int)$produk->id_produk + 1, 6);
         $simpan =  Produk::create($request->all());
 
         if ($simpan == TRUE) {
