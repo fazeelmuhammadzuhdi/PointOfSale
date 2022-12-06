@@ -62,7 +62,7 @@
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a href="#" class="nav-link">
+                             <a href="{{ route('supplier.index') }}" class="nav-link">
                                  <i class="fa fa-truck" aria-hidden="true"></i>
                                  <p>Supplier</p>
                              </a>
