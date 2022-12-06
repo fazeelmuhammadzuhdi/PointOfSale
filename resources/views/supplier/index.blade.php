@@ -13,13 +13,14 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped table-hover" id="myTable">
+                    <table class="table table-striped table-hover table-bordered" id="myTable">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Nama Supplier</th>
                                 <th>Alamat</th>
                                 <th>No Telepon</th>
-                                <th>Aksi</th>
+                                <th width="15%">Aksi</th>
                             </tr>
                         </thead>
 
@@ -47,7 +48,7 @@
                         <div class="form-group">
                             <label for="nama">Nama Supplier</label>
                             <input type="text" class="form-control" name="nama" id="nama"
-                                placeholder="Inputkan Nama Supplier">
+                                placeholder="Inputkan Nama Supplier" required>
                             <input type="text" hidden class="form-control" name="id" id="id"
                                 placeholder="Inputkan Nama Supplier">
                         </div>
@@ -55,11 +56,11 @@
                         <div class="form-group">
                             <label for="telepon">No Telpon</label>
                             <input type="text" class="form-control" onkeypress="return number(event)" name="telepon"
-                                id="telepon" placeholder="Inputkan No Telepon">
+                                id="telepon" placeholder="Inputkan No Telepon" required>
                         </div>
                         <div class="form-group">
                             <label for="alamat">Alamat</label>
-                            <textarea name="alamat" id="alamat" rows="5" class="form-control" placeholder="Inputkan Alamat"></textarea>
+                            <textarea name="alamat" id="alamat" rows="5" class="form-control" placeholder="Inputkan Alamat" required></textarea>
                         </div>
 
                         <div class="modal-footer justify-content-between">
@@ -91,6 +92,13 @@
                     url: "{{ route('supplier.index') }}"
                 },
                 columns: [{
+                        data: null,
+                        "sortable": false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
                         data: 'nama',
                         name: 'nama'
                     },
@@ -145,11 +153,77 @@
                 }
             });
         })
+
         //EDIT
-        $(document).on('click', '.edit', function(data) {
+        $(document).on('click', '.edit', function() {
+            $('#forms').attr('action', "{{ route('supplier.update') }}")
+            let id = $(this).attr('id')
+            $.ajax({
+                type: "post",
+                url: "{{ route('supplier.edit') }}",
+                data: {
+                    id: id,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    console.log(response);
+                    $('#id').val(response.id_supplier)
+                    $('#nama').val(response.nama)
+                    $('#telepon').val(response.telepon)
+                    $('#alamat').val(response.alamat)
+                    $('#btn-tambah').click()
+                },
+                error: function(xhr) {
+                    console.log(xhr);
+                }
+            });
+        })
 
-            $('#btn-tambah').click()
-
+        //HAPUS
+        $(document).on('click', '.hapus', function() {
+            let id = $(this).attr('id')
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "post",
+                        url: "{{ route('supplier.hapus') }}",
+                        data: {
+                            id: id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response, status) {
+                            if (status = '200') {
+                                setTimeout(() => {
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: response.text,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    }).then((response) => {
+                                        $('#myTable').DataTable().ajax.reload()
+                                    })
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Gagal Menghapus!',
+                            })
+                        }
+                    });
+                }
+            })
         })
     </script>
 @endpush

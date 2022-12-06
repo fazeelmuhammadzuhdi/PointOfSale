@@ -27,9 +27,7 @@ class SupplierController extends Controller
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
-        return view('supplier.index', [
-            'data' => $data
-        ]);
+        return view('supplier.index');
     }
 
     /**
@@ -95,9 +93,10 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+        $data = Supplier::find($request->id);
+        return response()->json($data);
     }
 
     /**
@@ -107,9 +106,16 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $data = Supplier::find($request->id);
+        $simpan = $data->update($request->all());
+
+        if ($simpan) {
+            return response()->json(['text' => 'Data Berhasil Di Update'], 200);
+        } else {
+            return response()->json(['text' => 'Data Gagal Di Update'], 400);
+        }
     }
 
     /**
@@ -118,8 +124,15 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $data = Supplier::find($request->id);
+        $simpan = $data->delete($request->all());
+
+        if ($simpan) {
+            return response()->json(['text' => 'Data Berhasil Di Hapus'], 200);
+        } else {
+            return response()->json(['text' => 'Data Gagal Di Hapus'], 400);
+        }
     }
 }
