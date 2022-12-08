@@ -3,6 +3,8 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PembelianDetailController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\SupplierController;
@@ -49,3 +51,8 @@ Route::post('pengeluaran-store', [PengeluaranController::class, 'store'])->name(
 Route::post('pengeluaran-edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
 Route::post('pengeluaran-update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
 Route::post('pengeluaran-hapus', [PengeluaranController::class, 'destroy'])->name('pengeluaran.hapus');
+
+Route::get('/pembelian/{id}/create', [PembelianController::class, 'create'])->name('pembelian.create');
+Route::resource('/pembelian', PembelianController::class)->except('create');
+
+Route::resource('/pembelian-detail', PembelianDetailController::class)->except('create', 'show', 'edit');

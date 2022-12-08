@@ -1,66 +1,75 @@
 @extends('layouts.main')
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="float-left">
-                        <h5>Data Pengeluaran</h5>
+    <div class="orders">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="box-title">Daftar Pembelian</h4>
+                        <button type="button" class="btn btn-info" id="btn-tambah" data-toggle="modal"
+                            data-target="#modal-info">
+                            Tambah
+                        </button>
                     </div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped table-hover table-bordered" id="myTable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tanggal</th>
-                                <th>Deskripsi</th>
-                                <th>Nominal</th>
-                                <th width="15%">Aksi</th>
-                            </tr>
-                        </thead>
 
-                    </table>
-                    <button type="button" class="btn btn-info" id="btn-tambah" data-toggle="modal"
-                        data-target="#modal-info">
-                        Tambah
-                    </button>
+                    <div class="card-body">
+                        <div class="table-stats order-table ov-h">
+                            <table class="table table-bordered" id="myTable">
+                                <thed>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal</th>
+                                        <th>Supplier</th>
+                                        <th>Total Item</th>
+                                        <th>Total Harga</th>
+                                        <th>Diskon</th>
+                                        <th>Total Bayar</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thed>
+
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="modal-info">
         <div class="modal-dialog">
-            <div class="modal-content bg-info">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Info Modal</h4>
+                    <h4 class="modal-title">Data Supplier</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('pengeluaran.store') }}" method="POST" id="forms">
-                        @csrf
-                        <div class="form-group">
-                            <label for="deskripsi">Deskripsi</label>
-                            <textarea name="deskripsi" id="deskripsi" rows="5" class="form-control" placeholder="Inputkan Deskripsi" required></textarea>
-                            <input type="text" hidden class="form-control" name="id" id="id"
-                                placeholder="Inputkan Nama Supplier">
-                        </div>
-                        <div class="form-group">
-                            <label for="nominal">Nominal Uang</label>
-                            <input type="text" class="form-control" onkeypress="return number(event)" name="nominal"
-                                id="nominal" placeholder="Inputkan Nominal Uang" required>
-                        </div>
-
-
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" name="batal" id="btn-tutup" class="btn btn-outline-light"
-                                data-dismiss="modal">Close</button>
-                            <button type="submit" id="simpan" class="btn btn-outline-light">Save </button>
-                        </div>
-                    </form>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <th>No</th>
+                            <th>Nama Supplier</th>
+                            <th>Telepon</th>
+                            <th>Alamat</th>
+                            <th>Aksi</th>
+                        </thead>
+                        <tbody>
+                            @foreach ($supplier as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->nama }}</td>
+                                    <td>{{ $item->telepon }}</td>
+                                    <td>{{ $item->alamat }}</td>
+                                    <td>
+                                        <a href="{{ route('pembelian.create', $item->id_supplier) }}"
+                                            class="btn btn-primary btn-xs"><i class="fa fa-check"></i>
+                                            Pilih</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -78,36 +87,36 @@
 
         function loaddata(params) {
             $('#myTable').DataTable({
-                serverside: true,
-                processing: true,
-                ajax: {
-                    url: "{{ route('pengeluaran.index') }}"
-                },
-                columns: [{
-                        data: null,
-                        "sortable": false,
-                        render: function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-                    {
-                        data: 'deskripsi',
-                        name: 'deskripsi'
-                    },
-                    {
-                        data: 'nominal',
-                        name: 'nominal'
-                    },
-                    {
-                        data: 'aksi',
-                        name: 'aksi',
-                        orderable: false
-                    },
-                ]
+                //     serverside: true,
+                //     processing: true,
+                //     ajax: {
+                //         url: "{{ route('supplier.index') }}"
+                //     },
+                //     columns: [{
+                //             data: null,
+                //             "sortable": false,
+                //             render: function(data, type, row, meta) {
+                //                 return meta.row + meta.settings._iDisplayStart + 1;
+                //             }
+                //         },
+                //         {
+                //             data: 'nama',
+                //             name: 'nama'
+                //         },
+                //         {
+                //             data: 'telepon',
+                //             name: 'telepon'
+                //         },
+                //         {
+                //             data: 'alamat',
+                //             name: 'alamat'
+                //         },
+                //         {
+                //             data: 'aksi',
+                //             name: 'aksi',
+                //             orderable: false
+                //         },
+                //     ]
             })
         }
 
@@ -148,20 +157,21 @@
 
         //EDIT
         $(document).on('click', '.edit', function() {
-            $('#forms').attr('action', "{{ route('pengeluaran.update') }}")
+            $('#forms').attr('action', "{{ route('supplier.update') }}")
             let id = $(this).attr('id')
             $.ajax({
                 type: "post",
-                url: "{{ route('pengeluaran.edit') }}",
+                url: "{{ route('supplier.edit') }}",
                 data: {
                     id: id,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(response) {
                     console.log(response);
-                    $('#id').val(response.id_pengeluaran)
-                    $('#nominal').val(response.nominal)
-                    $('#deskripsi').val(response.deskripsi)
+                    $('#id').val(response.id_supplier)
+                    $('#nama').val(response.nama)
+                    $('#telepon').val(response.telepon)
+                    $('#alamat').val(response.alamat)
                     $('#btn-tambah').click()
                 },
                 error: function(xhr) {
@@ -185,7 +195,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "post",
-                        url: "{{ route('pengeluaran.hapus') }}",
+                        url: "{{ route('supplier.hapus') }}",
                         data: {
                             id: id,
                             _token: "{{ csrf_token() }}"
@@ -200,7 +210,8 @@
                                         showConfirmButton: false,
                                         timer: 1500
                                     }).then((response) => {
-                                        $('#myTable').DataTable().ajax.reload()
+                                        $('#myTable').DataTable().ajax
+                                            .reload()
                                     })
                                 });
                             }

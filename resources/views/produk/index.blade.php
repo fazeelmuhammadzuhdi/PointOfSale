@@ -39,8 +39,8 @@
                                     <td>{{ $isi->nama_produk }}</td>
                                     <td>{{ $isi->kategori->nama_kategori }}</td>
                                     <td>{{ $isi->merk }}</td>
-                                    <td>{{ $isi->harga_beli }}</td>
-                                    <td>{{ $isi->harga_jual }}</td>
+                                    <td>{{ number_format($isi->harga_beli) }}</td>
+                                    <td>{{ number_format($isi->harga_jual) }}</td>
                                     <td>{{ $isi->diskon }}</td>
                                     <td>{{ $isi->stok }}</td>
 

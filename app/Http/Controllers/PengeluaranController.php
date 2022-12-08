@@ -131,7 +131,7 @@ class PengeluaranController extends Controller
      */
     public function destroy(Request $request)
     {
-        $data = Supplier::find($request->id);
+        $data = Pengeluaran::find($request->id);
         $simpan = $data->delete($request->all());
 
         if ($simpan) {
