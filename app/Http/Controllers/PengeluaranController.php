@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengeluaran;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SupplierController extends Controller
+class PengeluaranController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +16,26 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $data = Supplier::all();
+        $data = Pengeluaran::all();
         // return response()->json($data);
         if (request()->ajax()) {
             return datatables()->of($data)
+                // ->addIndexColumn()
+                ->addColumn('created_at', function ($data) {
+                    return tanggal_indonesia($data->created_at);
+                })
+                ->addColumn('nominal', function ($data) {
+                    return format_uang($data->nominal);
+                })
                 ->addColumn('aksi', function ($data) {
-                    $button = ' <button class="edit btn btn-sm btn-warning" id="' . $data->id_supplier . '" name="edit">Edit</button> ';
-                    $button .= ' <button class="hapus btn btn-sm btn-danger" id="' . $data->id_supplier . '" name="hapus">Hapus</button> ';
+                    $button = ' <button class="edit btn btn-sm btn-warning" id="' . $data->id_pengeluaran . '" name="edit">Edit</button> ';
+                    $button .= ' <button class="hapus btn btn-sm btn-danger" id="' . $data->id_pengeluaran . '" name="hapus">Hapus</button> ';
                     return $button;
                 })
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
-        return view('supplier.index');
+        return view('pengeluaran.index');
     }
 
     /**
@@ -49,16 +57,13 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'nama' => 'required',
-            'telepon' => 'required',
-            'alamat' => 'required',
+            'deskripsi' => 'required',
+            'nominal' => 'required',
         ];
 
         $text = [
-            'nama.required' => 'Kolom Nama Tidak Boleh Kosong',
-            'telepon.required' => 'Kolom Telepon Tidak Boleh Kosong',
-            'alamat.required' => 'Kolom Alamat Tidak Boleh Kosong',
-
+            'deskripsi.required' => 'Kolom Nama Tidak Boleh Kosong',
+            'nominal.required' => 'Kolom Telepon Tidak Boleh Kosong',
         ];
 
         $validasi = Validator::make($request->all(), $rules, $text);
@@ -67,7 +72,7 @@ class SupplierController extends Controller
             return response()->json(['success' => 0, 'text' => $validasi->errors()->first()], 400);
         }
         // dd($request->all());
-        $simpan = Supplier::create($request->all());
+        $simpan = Pengeluaran::create($request->all());
 
         if ($simpan) {
             return response()->json(['text' => 'Data Berhasil Di Simpan'], 200);
@@ -79,7 +84,7 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
     public function show()
@@ -90,12 +95,12 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request)
     {
-        $data = Supplier::find($request->id);
+        $data = Pengeluaran::find($request->id);
         return response()->json($data);
     }
 
@@ -103,12 +108,12 @@ class SupplierController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
-        $data = Supplier::find($request->id);
+        $data = Pengeluaran::find($request->id);
         $simpan = $data->update($request->all());
 
         if ($simpan) {
@@ -121,7 +126,7 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
