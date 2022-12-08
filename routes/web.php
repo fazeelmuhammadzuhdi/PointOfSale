@@ -55,4 +55,5 @@ Route::post('pengeluaran-hapus', [PengeluaranController::class, 'destroy'])->nam
 Route::get('/pembelian/{id}/create', [PembelianController::class, 'create'])->name('pembelian.create');
 Route::resource('/pembelian', PembelianController::class)->except('create');
 
+Route::get('/pembelian_detail/{id}/data', [PembelianDetailController::class, 'data'])->name('pembelian-detail.data');
 Route::resource('/pembelian-detail', PembelianDetailController::class)->except('create', 'show', 'edit');

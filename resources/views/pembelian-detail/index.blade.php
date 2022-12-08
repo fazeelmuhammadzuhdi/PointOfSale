@@ -23,28 +23,34 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="form-group row">
-                            <label for="kode_produk" class="col-lg-2">Kode Produk</label>
-                            <div class="col-lg-4">
-                                <div class="input-group">
-                                    <input type="text" name="kode_produk" class="form-control" id="kode_produk" />
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-info btn-flat" id="btn-tambah"
-                                            data-toggle="modal" data-target="#modal-info">
-                                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                                        </button>
-                                    </span>
+                        <form class="form-produk">
+                            @csrf
+                            <div class="form-group row">
+                                <label for="kode_produk" class="col-lg-2">Kode Produk</label>
+                                <div class="col-lg-4">
+                                    <div class="input-group">
+                                        <input type="hidden" name="id_pembelian" id="id_pembelian"
+                                            value="{{ $id_pembelian }}">
+                                        <input type="hidden" name="id_produk" id="id_produk">
+                                        <input type="text" name="kode_produk" class="form-control" id="kode_produk" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-info btn-flat" id="btn-tambah"
+                                                data-toggle="modal" data-target="#modal-info">
+                                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                            </button>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
 
                         <div class="table-stats order-table ov-h">
                             <table class="table table-bordered table-striped" id="myTable">
                                 <thead>
                                     <th>No</th>
                                     <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Harga</th>
+                                    <th>Nama Produk</th>
+                                    <th>Harga Beli</th>
                                     <th>Jumlah</th>
                                     <th>Sub Total</th>
                                     <th>Aksi</th>
@@ -98,9 +104,13 @@
                                     <td>Rp. {{ number_format($item->harga_beli) }}</td>
                                     <td>
                                         <a href="#" class="btn btn-primary btn-xs"
-                                            onclick="pilihProduk('{{ $item->id_produk }}', {{ $item->kode_produk }})"><i
+                                            onclick="pilihProduk('{{ $item->id_produk }}', '{{ $item->kode_produk }}')"><i
                                                 class="fa fa-check"></i>
                                             Pilih</a>
+                                        {{-- <button class="btn btn-primary btn-xs"
+                                            onclick="pilihProduk('{{ $item->id_produk }}', '{{ $item->kode_produk }}')"><i
+                                                class="fa fa-check"></i>
+                                            Pilih</button> --}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -123,36 +133,44 @@
 
         function loaddata(params) {
             $('#myTable').DataTable({
-                // serverside: true,
-                // processing: true,
-                // ajax: {
-                //     url: "{{ route('supplier.index') }}"
-                // },
-                // columns: [{
-                //         data: null,
-                //         "sortable": false,
-                //         render: function(data, type, row, meta) {
-                //             return meta.row + meta.settings._iDisplayStart + 1;
-                //         }
-                //     },
-                //     {
-                //         data: 'nama',
-                //         name: 'nama'
-                //     },
-                //     {
-                //         data: 'telepon',
-                //         name: 'telepon'
-                //     },
-                //     {
-                //         data: 'alamat',
-                //         name: 'alamat'
-                //     },
-                //     {
-                //         data: 'aksi',
-                //         name: 'aksi',
-                //         orderable: false
-                //     },
-                // ]
+                serverside: true,
+                processing: true,
+                ajax: {
+                    url: "{{ route('pembelian-detail.data', $id_pembelian) }}",
+                },
+                columns: [{
+                        data: null,
+                        "sortable": false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'kode_produk',
+                        name: 'kode_produk'
+                    },
+                    {
+                        data: 'nama_produk',
+                        name: 'nama_produk'
+                    },
+                    {
+                        data: 'harga_beli',
+                        name: 'harga_beli'
+                    },
+                    {
+                        data: 'jumlah',
+                        name: 'jumlah'
+                    },
+                    {
+                        data: 'subtotal',
+                        name: 'subtotal'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        orderable: false
+                    },
+                ]
             })
         }
 
@@ -162,6 +180,53 @@
                 return false;
             }
             return true;
+        }
+
+        function pilihProduk(id, kode) {
+            $('#id_produk').val(id);
+            $('#kode_produk').val(kode);
+            $('#modal-info').modal('hide');
+            tambahProduk()
+        }
+
+        function tambahProduk() {
+            $.post('{{ route('pembelian-detail.store') }}', $('.form-produk').serialize())
+                .done(response => {
+                    $('#kode_produk').focus();
+                    $('#myTable').DataTable().ajax.reload()
+                })
+                .fail(errors => {
+                    alert('Tidak dapat menyimpan data');
+                    return;
+                });
+        }
+
+        function deleteData(url) {
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response, status) => {
+                        if (status = '200') {
+                            setTimeout(() => {
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: response.text,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then((response) => {
+                                    $('#myTable').DataTable().ajax.reload()
+                                })
+                            });
+                        }
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menghapus data');
+                        return;
+                    });
+            }
         }
     </script>
 @endpush

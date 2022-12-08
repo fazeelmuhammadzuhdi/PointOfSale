@@ -13,4 +13,14 @@ class PembelianDetail extends Model
     protected $fillable = [
         'id_pembelian_detail', 'id_pembelian', 'id_produk', 'harga_beli', 'jumlah', 'subtotal'
     ];
+
+    /**
+     * Get the produk associated with the PembelianDetail
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function produk()
+    {
+        return $this->hasOne(Produk::class, 'id_produk', 'id_produk');
+    }
 }
