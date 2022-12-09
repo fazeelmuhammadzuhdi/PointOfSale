@@ -44,38 +44,76 @@
                             </div>
                         </form>
 
-                        <div class="table-stats order-table ov-h">
-                            <table class="table table-bordered table-striped" id="myTable">
-                                <thead>
-                                    <th>No</th>
-                                    <th>Kode</th>
-                                    <th>Nama Produk</th>
-                                    <th>Harga Beli</th>
-                                    <th width="15%">Jumlah</th>
-                                    <th>Sub Total</th>
-                                    <th>Aksi</th>
-                                </thead>
-                                {{-- <tbody>
-                                    @foreach ($produk as $item)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->kode_produk }}</td>
-                                            <td>{{ $item->nama_produk }}</td>
-                                            <td>{{ $item->harga_beli }}</td>
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-check"></i>
-                                                    Pilih</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody> --}}
-                            </table>
+                        <div class="py-12">
+                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                    <table class="table table-bordered table-striped table-pembelian" id="myTable">
+                                        <thead>
+                                            <th>No</th>
+                                            <th>Kode Produk</th>
+                                            <th>Nama Produk</th>
+                                            <th>Harga Beli</th>
+                                            <th width="15%">Jumlah / Qty</th>
+                                            <th>Sub Total</th>
+                                            <th>Aksi</th>
+                                        </thead>
+                                    </table>
+
+                                    <div class="row mt-3">
+                                        <div class="col-lg-6">
+                                            <div class="tampil-bayar bg-primary"></div>
+                                            <div class="tampil-terbilang"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <form action="{{ route('pembelian.store') }}" class="form-pembelian"
+                                                method="post">
+                                                @csrf
+                                                <input type="hidden" name="id_pembelian" value="{{ $id_pembelian }}">
+                                                <input type="hidden" name="total" id="total">
+                                                <input type="hidden" name="total_item" id="total_item">
+                                                <input type="hidden" name="bayar" id="bayar">
+
+                                                <div class="form-group row">
+                                                    <label for="totalrp" class="col-lg-2 control-label">Total</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" id="totalrp" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="diskon" class="col-lg-2 control-label">Diskon</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="number" name="diskon" id="diskon"
+                                                            class="form-control" value="0">
+                                                        {{-- <input type="number" name="diskon" id="diskon"
+                                                            class="form-control" value="{{ $diskon }}"> --}}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="bayar" class="col-lg-2 control-label">Bayar</label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" id="bayarrp" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="d-sm-flex align-items-center justify-content-center mt-4 mb-2">
+                                        <button type="submit" class="btn btn-primary justify-content-end"><i
+                                                class="fa fa-save"></i>
+                                            Simpan
+                                            Transaksi</button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="modal-info">
         <div class="modal-dialog">
@@ -129,12 +167,15 @@
     <script>
         $(document).ready(function() {
             loaddata()
+
         });
 
         function loaddata(params) {
             $('#myTable').DataTable({
-                serverside: true,
+                responsive: true,
                 processing: true,
+                serverSide: true,
+                autoWidth: false,
                 ajax: {
                     url: "{{ route('pembelian-detail.data', $id_pembelian) }}",
                 },
@@ -168,10 +209,20 @@
                     {
                         data: 'aksi',
                         name: 'aksi',
-                        orderable: false
+                        orderable: false,
+                        sortable: false
                     },
-                ]
+
+                ],
+                dom: 'Brt',
+                bSort: false,
+                paginata: false
             });
+
+            $(document).on('draw.dt', function() {
+                loadForm($('#diskon').val());
+            });
+
 
             $(document).on('input', '.quantity', function() {
                 let id = $(this).data('id')
@@ -189,7 +240,7 @@
                     alert('Jumlah tidak boleh lebih dari 10000');
                     return;
                 }
-                
+
                 $.post(`{{ url('/pembelian-detail') }}/${id}`, {
                         '_token': $('[name=csrf-token]').attr('content'),
                         '_method': 'PUT',
@@ -203,6 +254,14 @@
                         return;
                     });
             });
+
+            $(document).on('input', '#diskon', function() {
+                if ($(this).val() == "") {
+                    $(this).val(0).select();
+                }
+                loadForm($(this).val());
+            });
+
         }
 
         function number(evt) {
@@ -259,5 +318,52 @@
                     });
             }
         }
+
+        function loadForm(diskon = 0) {
+            $('#total').val($('.total').text());
+            $('#total_item').val($('.total_item').text());
+
+            $.get(`{{ url('/pembelian_detail/loadform') }}/${diskon}/${$('.total').text()}`)
+                .done(response => {
+                    $('#totalrp').val('Rp. ' + response.totalrp);
+                    $('#bayarrp').val('Rp. ' + response.bayarrp);
+                    $('#bayar').val(response.bayar);
+                    $('.tampil-bayar').text('Rp. ' + response.bayarrp);
+                    $('.tampil-terbilang').text(response.terbilang);
+                })
+                .fail(errors => {
+                    alert('Tidak dapat menampilkan data');
+                    return;
+                })
+        }
     </script>
+@endpush
+
+@push('before-style')
+    <style>
+        .tampil-bayar {
+            font-size: 5em;
+            text-align: center;
+            height: 130px;
+        }
+
+        .tampil-terbilang {
+            padding: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+
+        .table-pembelian tbody tr:last-child {
+            display: none;
+        }
+
+        @media(max-width: 768px) {
+            .tampil-bayar {
+                font-size: 3em;
+                height: 70px;
+                padding-top: 5px;
+            }
+        }
+    </style>
 @endpush
