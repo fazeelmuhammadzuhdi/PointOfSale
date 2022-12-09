@@ -51,7 +51,7 @@
                                     <th>Kode</th>
                                     <th>Nama Produk</th>
                                     <th>Harga Beli</th>
-                                    <th>Jumlah</th>
+                                    <th width="15%">Jumlah</th>
                                     <th>Sub Total</th>
                                     <th>Aksi</th>
                                 </thead>
@@ -171,7 +171,38 @@
                         orderable: false
                     },
                 ]
-            })
+            });
+
+            $(document).on('input', '.quantity', function() {
+                let id = $(this).data('id')
+
+                let jumlah = parseInt($(this).val());
+
+                if (jumlah < 1) {
+                    $(this).val(1);
+                    alert('Jumlah tidak boleh kurang dari 1');
+                    return;
+                }
+
+                if (jumlah > 10000) {
+                    $(this).val(10000);
+                    alert('Jumlah tidak boleh lebih dari 10000');
+                    return;
+                }
+                
+                $.post(`{{ url('/pembelian-detail') }}/${id}`, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'PUT',
+                        'jumlah': jumlah
+                    })
+                    .done(response => {
+                        $('#myTable').DataTable().ajax.reload()
+                    })
+                    .fail(errors => {
+                        alert('Tidak dapat menyimpan data');
+                        return;
+                    });
+            });
         }
 
         function number(evt) {

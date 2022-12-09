@@ -43,6 +43,9 @@ class PembelianDetailController extends Controller
                 ->addColumn('harga_beli', function ($data) {
                     return 'Rp. ' . $data->harga_beli;
                 })
+                ->addColumn('jumlah', function ($data) {
+                    return '<input type="number" class="form-control input-sm quantity" data-id="' . $data->id_pembelian_detail . '" value="' . $data->jumlah . '">';
+                })
                 ->addColumn('subtotal', function ($data) {
                     return 'Rp. ' . $data->subtotal;
                 })
@@ -51,7 +54,7 @@ class PembelianDetailController extends Controller
                                     <button onclick="deleteData(`' . route('pembelian-detail.destroy', $data->id_pembelian_detail) . '`)" class="btn btn-danger btn-sm"><i class="fa fa-trash"> Hapus</i></button>
                                 </div>';
                 })
-                ->rawColumns(['aksi'])
+                ->rawColumns(['aksi', 'kode_produk', 'jumlah'])
                 ->make(true);
         }
     }
@@ -121,7 +124,10 @@ class PembelianDetailController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $detail = PembelianDetail::find($id);
+        $detail->jumlah = $request->jumlah;
+        $detail->subtotal = $detail->harga_beli * $request->jumlah;
+        $detail->update();
     }
 
     /**
