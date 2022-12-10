@@ -13,4 +13,14 @@ class Pembelian extends Model
     protected $fillable = [
         'id_pembelian', 'id_supplier', 'total_item', 'total_harga', 'diskon', 'bayar'
     ];
+
+    /**
+     * Get the supplier that owns the Pembelian
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'id_supplier', 'id_supplier');
+    }
 }

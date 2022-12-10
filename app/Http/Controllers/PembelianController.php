@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pembelian;
+use App\Models\PembelianDetail;
+use App\Models\Produk;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
@@ -15,11 +17,49 @@ class PembelianController extends Controller
      */
     public function index()
     {
+        $detail = PembelianDetail::all();
+        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->get();
         $supplier = Supplier::orderBy('nama', 'asc')->get();
 
-
-        return view('pembelian.index', compact('supplier'));
+        return view('pembelian.index', compact('supplier', 'pembelian', 'detail'));
     }
+
+    // public function data()
+    // {
+    //     $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->get();
+
+    //     return datatables()
+    //         ->of($pembelian)
+    //         ->addIndexColumn()
+    //         ->addColumn('total_item', function ($pembelian) {
+    //             return format_uang($pembelian->total_item);
+    //         })
+    //         ->addColumn('total_harga', function ($pembelian) {
+    //             return 'Rp. ' . format_uang($pembelian->total_harga);
+    //         })
+    //         ->addColumn('bayar', function ($pembelian) {
+    //             return 'Rp. ' . format_uang($pembelian->bayar);
+    //         })
+    //         ->addColumn('tanggal', function ($pembelian) {
+    //             return tanggal_indonesia($pembelian->created_at, false);
+    //         })
+    //         ->addColumn('supplier', function ($pembelian) {
+    //             return $pembelian->supplier->nama;
+    //         })
+    //         ->editColumn('diskon', function ($pembelian) {
+    //             return $pembelian->diskon . '%';
+    //         })
+    //         ->addColumn('aksi', function ($pembelian) {
+    //             return '
+    //             <div class="btn-group">
+    //                 <button onclick="showDetail(`' . route('pembelian.show', $pembelian->id_pembelian) . '`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
+    //                 <button onclick="deleteData(`' . route('pembelian.destroy', $pembelian->id_pembelian) . '`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+    //             </div>
+    //             ';
+    //         })
+    //         ->rawColumns(['aksi'])
+    //         ->make(true);
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -50,7 +90,22 @@ class PembelianController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $pembelian = Pembelian::findOrFail($request->id_pembelian);
+        $pembelian->total_item = $request->total_item;
+        $pembelian->total_harga = $request->total;
+        $pembelian->diskon = $request->diskon;
+        $pembelian->bayar = $request->bayar;
+        $pembelian->update();
+
+        $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get();
+
+        foreach ($detail as $item) {
+            $produk = Produk::find($item->id_produk);
+            $produk->stok += $item->jumlah;
+            $produk->update();
+        }
+
+        return redirect()->route('pembelian.index');
     }
 
     /**

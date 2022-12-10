@@ -6,10 +6,14 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="box-title">Daftar Pembelian</h4>
-                        <button type="button" class="btn btn-info" id="btn-tambah" data-toggle="modal"
-                            data-target="#modal-info">
-                            Tambah
+                        <button type="button" class="btn btn-success btn-sm" id="btn-tambah" data-toggle="modal"
+                            data-target="#modal-info"><i class="fa fa-plus-circle"></i>
+                            Transaksi Baru
                         </button>
+                        @empty(!session('id_pembelian'))
+                            <a href="{{ route('pembelian-detail.index') }}" class="btn btn-info btn-sm"><i
+                                    class="fa fa-edit"></i> Transaksi Aktif</a>
+                        @endempty
                     </div>
 
                     <div class="card-body">
@@ -18,7 +22,7 @@
                                 <thed>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tanggal</th>
+                                        <th width="20%">Tanggal</th>
                                         <th>Supplier</th>
                                         <th>Total Item</th>
                                         <th>Total Harga</th>
@@ -27,7 +31,35 @@
                                         <th>Action</th>
                                     </tr>
                                 </thed>
-
+                                <tbody>
+                                    @foreach ($pembelian as $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ tanggal_indonesia($item->created_at) }}</td>
+                                            <td>{{ $item->supplier->nama ?? '-' }}</td>
+                                            <td>{{ format_uang($item->total_item) }}</td>
+                                            <td>{{ 'Rp. ' . format_uang($item->total_harga) }}</td>
+                                            <td>{{ $item->diskon . '%' }}</td>
+                                            <td>{{ format_uang($item->bayar) }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                    data-target="#modal-detail"><i class="fa fa-eye"></i>
+                                                    Detail
+                                                </button>
+                                                {{-- <a href="{{ route('pembelian.show', $item->id_pembelian) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="fa fa-eye"></i> Detail</a> --}}
+                                                <form action="#" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="btn btn-danger btn-sm">
+                                                        <i class="fa fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -36,6 +68,7 @@
         </div>
     </div>
 
+    {{-- Modal Tambah Data --}}
     <div class="modal fade" id="modal-info">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -74,158 +107,103 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal View Data --}}
+    <div class="modal fade" id="modal-detail">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Data Supplier</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-striped" style="width: 100%">
+                        <thead>
+                            <th width="5%">No</th>
+                            <th>Kode Produk</th>
+                            <th>Nama Produk</th>
+                            <th>Harga</th>
+                            <th>Jumlah</th>
+                            <th>Sub Total</th>
+                        </thead>
+                        <tbody>
+                            @foreach ($detail as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td><span class="badge badge-success">{{ $item->produk->kode_produk }}</span>
+                                    </td>
+                                    <td>{{ $item->produk->nama_produk }}</td>
+                                    <td>{{ 'Rp. ' . format_uang($item->harga_beli) }}</td>
+                                    <td>{{ $item->jumlah }}</td>
+                                    <td>{{ 'Rp. ' . format_uang($item->subtotal) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('after-script')
     <script src="{{ asset('plugins/datatables/jquery.dataTables.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.all.min.js"></script>
 
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             loaddata()
         });
 
-        function loaddata(params) {
+        function loaddata() {
             $('#myTable').DataTable({
-                //     serverside: true,
-                //     processing: true,
-                //     ajax: {
-                //         url: "{{ route('supplier.index') }}"
-                //     },
-                //     columns: [{
-                //             data: null,
-                //             "sortable": false,
-                //             render: function(data, type, row, meta) {
-                //                 return meta.row + meta.settings._iDisplayStart + 1;
-                //             }
-                //         },
-                //         {
-                //             data: 'nama',
-                //             name: 'nama'
-                //         },
-                //         {
-                //             data: 'telepon',
-                //             name: 'telepon'
-                //         },
-                //         {
-                //             data: 'alamat',
-                //             name: 'alamat'
-                //         },
-                //         {
-                //             data: 'aksi',
-                //             name: 'aksi',
-                //             orderable: false
-                //         },
-                //     ]
-            })
-        }
-
-        function number(evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            return true;
-        }
-
-        $(document).on('submit', 'form', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: $(this).attr('action'),
-                type: $(this).attr('method'),
-                typeData: "JSON",
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response);
-                    $('#btn-tutup').click()
-                    $('#myTable').DataTable().ajax.reload()
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: response.text,
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: {
+                    url: '{{ route('pembelian.data') }}',
                 },
-                error: function(xhr) {
-                    toastr.error(xhr.responseJSON.text, 'Gagal!')
-                }
-            });
-        })
-
-        //EDIT
-        $(document).on('click', '.edit', function() {
-            $('#forms').attr('action', "{{ route('supplier.update') }}")
-            let id = $(this).attr('id')
-            $.ajax({
-                type: "post",
-                url: "{{ route('supplier.edit') }}",
-                data: {
-                    id: id,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    console.log(response);
-                    $('#id').val(response.id_supplier)
-                    $('#nama').val(response.nama)
-                    $('#telepon').val(response.telepon)
-                    $('#alamat').val(response.alamat)
-                    $('#btn-tambah').click()
-                },
-                error: function(xhr) {
-                    console.log(xhr);
-                }
-            });
-        })
-
-        //HAPUS
-        $(document).on('click', '.hapus', function() {
-            let id = $(this).attr('id')
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "post",
-                        url: "{{ route('supplier.hapus') }}",
-                        data: {
-                            id: id,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(response, status) {
-                            if (status = '200') {
-                                setTimeout(() => {
-                                    Swal.fire({
-                                        position: 'top-end',
-                                        icon: 'success',
-                                        title: response.text,
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    }).then((response) => {
-                                        $('#myTable').DataTable().ajax
-                                            .reload()
-                                    })
-                                });
-                            }
-                        },
-                        error: function(xhr) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Gagal Menghapus!',
-                            })
+                columns: [{
+                        data: null,
+                        "sortable": false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
                         }
-                    });
-                }
+                    },
+                    {
+                        data: 'tanggal',
+                        name: 'tanggal'
+                    },
+                    {
+                        data: 'supplier',
+                        name: 'supplier'
+                    },
+                    {
+                        data: 'total_item',
+                        name: 'total_item'
+                    },
+                    {
+                        data: 'total_harga',
+                        name: 'total_harga'
+                    },
+                    {
+                        data: 'diskon',
+                        name: 'diskon'
+                    },
+                    {
+                        data: 'bayar',
+                        name: 'bayar'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        orderable: false
+                    },
+                ]
             })
-        })
-    </script>
+        }
+    </script> --}}
 @endpush

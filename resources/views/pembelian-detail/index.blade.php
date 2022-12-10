@@ -94,15 +94,17 @@
                                                         <input type="text" id="bayarrp" class="form-control">
                                                     </div>
                                                 </div>
+
+                                                <div class="d-sm-flex align-items-center justify-content-center mt-4 mb-2">
+                                                    <button type="submit" class="btn btn-primary justify-content-end"><i
+                                                            class="fa fa-save"></i>
+                                                        Simpan
+                                                        Transaksi</button>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>
-                                    <div class="d-sm-flex align-items-center justify-content-center mt-4 mb-2">
-                                        <button type="submit" class="btn btn-primary justify-content-end"><i
-                                                class="fa fa-save"></i>
-                                            Simpan
-                                            Transaksi</button>
-                                    </div>
+
                                 </div>
 
                             </div>
@@ -260,6 +262,10 @@
                     $(this).val(0).select();
                 }
                 loadForm($(this).val());
+            });
+
+            $('.btn-simpan').on('click', function() {
+                $('.form-pembelian').submit();
             });
 
         }

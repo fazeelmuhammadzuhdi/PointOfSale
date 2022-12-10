@@ -52,9 +52,12 @@ Route::post('pengeluaran-edit', [PengeluaranController::class, 'edit'])->name('p
 Route::post('pengeluaran-update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
 Route::post('pengeluaran-hapus', [PengeluaranController::class, 'destroy'])->name('pengeluaran.hapus');
 
+//Pembelian
+// Route::get('/pembelian/data', [PembelianController::class, 'data'])->name('pembelian.data');
 Route::get('/pembelian/{id}/create', [PembelianController::class, 'create'])->name('pembelian.create');
 Route::resource('/pembelian', PembelianController::class)->except('create');
 
+//Pembelian Detail
 Route::get('/pembelian_detail/{id}/data', [PembelianDetailController::class, 'data'])->name('pembelian-detail.data');
 Route::get('/pembelian_detail/loadform/{diskon}/{total}', [PembelianDetailController::class, 'loadForm'])->name('pembelian_detail.load_form');
 Route::resource('/pembelian-detail', PembelianDetailController::class)->except('create', 'show', 'edit');
