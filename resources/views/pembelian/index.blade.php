@@ -17,21 +17,20 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="table-stats order-table ov-h">
-                            <table class="table table-bordered" id="myTable">
-                                <thed>
-                                    <tr>
-                                        <th>No</th>
-                                        <th width="20%">Tanggal</th>
-                                        <th>Supplier</th>
-                                        <th>Total Item</th>
-                                        <th>Total Harga</th>
-                                        <th>Diskon</th>
-                                        <th>Total Bayar</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thed>
-                                <tbody>
+                        <table class="table table-bordered" id="myTable">
+                            <thed>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Supplier</th>
+                                    <th>Total Item</th>
+                                    <th>Total Harga</th>
+                                    <th>Diskon</th>
+                                    <th>Total Bayar</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thed>
+                            {{-- <tbody>
                                     @foreach ($pembelian as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
@@ -43,13 +42,15 @@
                                             <td>{{ format_uang($item->bayar) }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
-                                                    data-target="#modal-detail"><i class="fa fa-eye"></i>
-                                                    Detail
-                                                </button>
-                                                {{-- <a href="{{ route('pembelian.show', $item->id_pembelian) }}"
+                                                        data-target="#modal-detail"><i class="fa fa-eye"></i>
+                                                        Detail
+                                                    </button>
+                                                <a href="{{ route('pembelian.show', $item->id_pembelian) }}"
                                                     class="btn btn-info btn-sm">
-                                                    <i class="fa fa-eye"></i> Detail</a> --}}
-                                                <form action="#" method="POST" class="d-inline">
+                                                    <i class="fa fa-eye"></i> Detail</a>
+
+                                                <form action="{{ route('pembelian-detail.destroy', $item->id_pembelian) }}"
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     @method('delete')
                                                     <button class="btn btn-danger btn-sm">
@@ -59,9 +60,8 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                </tbody> --}}
+                        </table>
                     </div>
                 </div>
             </div>
@@ -107,8 +107,8 @@
             </div>
         </div>
     </div>
-
-    {{-- Modal View Data --}}
+    {{-- 
+    Modal View Data --}}
     <div class="modal fade" id="modal-detail">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -119,7 +119,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-bordered table-striped" style="width: 100%">
+                    <table class="table table-bordered table-striped table-detail" style="width: 100%">
                         <thead>
                             <th width="5%">No</th>
                             <th>Kode Produk</th>
@@ -128,7 +128,7 @@
                             <th>Jumlah</th>
                             <th>Sub Total</th>
                         </thead>
-                        <tbody>
+                        {{-- <tbody>
                             @foreach ($detail as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -140,7 +140,7 @@
                                     <td>{{ 'Rp. ' . format_uang($item->subtotal) }}</td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody> --}}
                     </table>
                 </div>
             </div>
@@ -152,13 +152,15 @@
     <script src="{{ asset('plugins/datatables/jquery.dataTables.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.8/dist/sweetalert2.all.min.js"></script>
 
-    {{-- <script>
-        $(document).ready(function() {
-            loaddata()
-        });
+    <script>
+        // $(document).ready(function() {
+        //     loaddata()
+        // });
 
-        function loaddata() {
-            $('#myTable').DataTable({
+        let table, table1;
+
+        $(function() {
+            table = $('#myTable').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
@@ -174,36 +176,89 @@
                         }
                     },
                     {
-                        data: 'tanggal',
-                        name: 'tanggal'
+                        data: 'tanggal'
                     },
                     {
-                        data: 'supplier',
-                        name: 'supplier'
+                        data: 'supplier'
                     },
                     {
-                        data: 'total_item',
-                        name: 'total_item'
+                        data: 'total_item'
                     },
                     {
-                        data: 'total_harga',
-                        name: 'total_harga'
+                        data: 'total_harga'
                     },
                     {
-                        data: 'diskon',
-                        name: 'diskon'
+                        data: 'diskon'
                     },
                     {
-                        data: 'bayar',
-                        name: 'bayar'
+                        data: 'bayar'
                     },
                     {
                         data: 'aksi',
-                        name: 'aksi',
-                        orderable: false
+                        searchable: false,
+                        sortable: false
+                    },
+                ]
+            });
+            $('#myTable').DataTable();
+            table1 = $('.table-detail').DataTable({
+                processing: true,
+                bSort: false,
+                dom: 'Brt',
+                columns: [{
+                        data: null,
+                        "sortable": false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'kode_produk'
+                    },
+                    {
+                        data: 'nama_produk'
+                    },
+                    {
+                        data: 'harga_beli'
+                    },
+                    {
+                        data: 'jumlah'
+                    },
+                    {
+                        data: 'subtotal'
                     },
                 ]
             })
+        });
+
+
+        function showDetail(url) {
+            $('#modal-detail').modal('show');
+            table1.ajax.url(url);
+            table1.ajax.reload();
         }
-    </script> --}}
+
+        function deleteData(url) {
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Berhasil hapus Data',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menghapus data');
+                        return;
+                    });
+            }
+        }
+    </script>
 @endpush
