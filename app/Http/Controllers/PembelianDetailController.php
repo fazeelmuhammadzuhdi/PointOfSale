@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Models\Pembelian;
 use App\Models\PembelianDetail;
 use App\Models\Produk;
 use App\Models\Supplier;
@@ -20,11 +21,12 @@ class PembelianDetailController extends Controller
         $id_pembelian = session('id_pembelian');
         $produk = Produk::all();
         $supplier = Supplier::find(session('id_supplier'));
+        $diskon = Pembelian::find($id_pembelian)->diskon ?? 0;
 
         if (!$supplier) {
             abort(404);
         }
-        return view('pembelian-detail.index', compact('id_pembelian', 'produk', 'supplier'));
+        return view('pembelian-detail.index', compact('id_pembelian', 'produk', 'supplier', 'diskon'));
     }
 
     public function data($id)
