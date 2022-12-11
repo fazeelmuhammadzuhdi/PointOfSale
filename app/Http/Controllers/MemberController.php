@@ -6,6 +6,7 @@ use App\Models\Member;
 use App\Models\Setting;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 class MemberController extends Controller
 {
@@ -42,8 +43,8 @@ class MemberController extends Controller
             ->addColumn('aksi', function ($member) {
                 return '
                 <div class="btn-group">
-                    <button type="button" onclick="editForm(`' . route('member.update', $member->id_member) . '`)" class="btn btn-xs btn-info btn-flat mr-3"><i class="fa fa-pen"></i> Edit</button>
-                    <button type="button" onclick="deleteData(`' . route('member.destroy', $member->id_member) . '`)" class="btn btn-xs btn-danger btn-flat mr-3"><i class="fa fa-trash"></i> Hapus</button>
+                    <button type="button" onclick="editForm(`' . route('member.update', $member->id_member) . '`)" class="btn btn-warning btn-sm mr-1"><i class="fa fa-pen"></i> Edit</button>
+                    <button type="button" onclick="deleteData(`' . route('member.destroy', $member->id_member) . '`)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
                 </div>
                 ';
             })
@@ -143,10 +144,13 @@ class MemberController extends Controller
         $datamember = $datamember->chunk(2);
         $setting    = Setting::first();
 
-        $no  = 1;
-        $pdf = PDF::loadView('member.cetak', compact('datamember', 'no', 'setting'));
-        // $pdf->setPaper(array(0, 0, 566.93, 850.39), 'potrait');
+        // $no  = 1;
+        // $pdf = PDF::loadView('member.cetak', compact('datamember', 'no', 'setting'))->setPaper('a4', 'portrait');
         // return $pdf->stream('member', $pdf);
+
+        $pdf = PDF::loadView('member.cetak', compact('datamember', 'no', 'setting'));
+        $pdf->setPaper(array(0, 0, 566.93, 850.39), 'potrait');
+        return $pdf->stream('member', $pdf);
         return $pdf->download('invoice.pdf');
     }
 }

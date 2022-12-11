@@ -98,13 +98,13 @@
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a href="#" class="nav-link">
+                             <a href="{{ route('transaksi.index') }}" class="nav-link">
                                  <i class="fas fa-chart-bar"></i>
                                  <p>Transaksi Lama</p>
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a href="#" class="nav-link">
+                             <a href="{{ route('transaksi.baru') }}" class="nav-link">
                                  <i class="fas fa-chart-pie"></i>
                                  <p>Transaksi Baru</p>
                              </a>
