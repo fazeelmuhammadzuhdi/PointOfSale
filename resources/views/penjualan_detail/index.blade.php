@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Transaksi Penjualn')
+@section('title', 'Transaksi Penjualan')
 @section('content')
 
     <div class="row">
@@ -28,7 +28,7 @@
                         </div>
                     </form>
 
-                    <table class="table table-stiped table-bordered table-penjualan">
+                    <table class="table table-striped table-bordered table-penjualan">
                         <thead>
                             <th width="5%">No</th>
                             <th>Kode</th>
@@ -47,14 +47,14 @@
                             <div class="tampil-terbilang"></div>
                         </div>
                         <div class="col-lg-4">
-                            <form action="#" class="form-penjualan" method="post">
+                            <form action="{{ route('transaksi.simpan') }}" class="form-penjualan" method="post">
                                 @csrf
                                 <input type="hidden" name="id_penjualan" value="{{ $id_penjualan }}">
                                 <input type="hidden" name="total" id="total">
                                 <input type="hidden" name="total_item" id="total_item">
                                 <input type="hidden" name="bayar" id="bayar">
-                                {{-- <input type="hidden" name="id_member" id="id_member"
-                                    value="{{ $memberSelected->id_member }}"> --}}
+                                <input type="hidden" name="id_member" id="id_member"
+                                    value="{{ $memberSelected->id_member }}">
 
                                 <div class="form-group row">
                                     <label for="totalrp" class="col-lg-2 control-label">Total</label>
@@ -66,8 +66,8 @@
                                     <label for="kode_member" class="col-lg-2 control-label">Member</label>
                                     <div class="col-lg-8">
                                         <div class="input-group">
-                                            {{-- <input type="text" class="form-control" id="kode_member"
-                                                value="{{ $memberSelected->kode_member }}"> --}}
+                                            <input type="text" class="form-control" id="kode_member"
+                                                value="{{ $memberSelected->kode_member }}">
                                             <span class="input-group-btn">
                                                 <button onclick="tampilMember()" class="btn btn-info btn-flat"
                                                     type="button"><i class="fa fa-arrow-right"></i></button>
@@ -78,8 +78,8 @@
                                 <div class="form-group row">
                                     <label for="diskon" class="col-lg-2 control-label">Diskon</label>
                                     <div class="col-lg-8">
-                                        {{-- <input type="number" name="diskon" id="diskon" class="form-control"
-                                            value="{{ !empty($memberSelected->id_member) ? $diskon : 0 }}" readonly> --}}
+                                        <input type="number" name="diskon" id="diskon" class="form-control"
+                                            value="{{ !empty($memberSelected->id_member) ? $diskon : 0 }}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -91,8 +91,8 @@
                                 <div class="form-group row">
                                     <label for="diterima" class="col-lg-2 control-label">Diterima</label>
                                     <div class="col-lg-8">
-                                        {{-- <input type="number" id="diterima" class="form-control" name="diterima"
-                                            value="{{ $penjualan->diterima ?? 0 }}"> --}}
+                                        <input type="number" id="diterima" class="form-control" name="diterima"
+                                            value="{{ $penjualan->diterima ?? 0 }}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -108,19 +108,20 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary btn-sm btn-simpan mr-3"><i class="fa fa-save"></i> Simpan
+                    <button type="submit" class="btn btn-primary btn-sm btn-simpan mr-3"><i class="fa fa-save"></i>
+                        Simpan
                         Transaksi</button>
                 </div>
             </div>
         </div>
     </div>
 
-    @includeIf('penjualan_detail.produk')
-    @includeIf('penjualan_detail.member')
+    @include('penjualan_detail.produk')
+    @include('penjualan_detail.member')
 
 @endsection
 
-{{-- @push('after-script')
+@push('after-script')
     <script>
         let table, table2;
         $(function() {
@@ -134,9 +135,11 @@
                         url: '{{ route('transaksi.data', $id_penjualan) }}',
                     },
                     columns: [{
-                            data: 'DT_RowIndex',
-                            searchable: false,
-                            sortable: false
+                            data: null,
+                            "sortable": false,
+                            render: function(data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
                         },
                         {
                             data: 'kode_produk'
@@ -193,7 +196,7 @@
                     })
                     .done(response => {
                         $(this).on('mouseout', function() {
-                            table.ajax.reload(() => loadForm($('#diskon').val()));
+                            table.ajax.reload(() => loadForm($('#diskon').val()))
                         });
                     })
                     .fail(errors => {
@@ -239,7 +242,7 @@
             $.post('{{ route('transaksi.store') }}', $('.form-produk').serialize())
                 .done(response => {
                     $('#kode_produk').focus();
-                    table.ajax.reload(() => loadForm($('#diskon').val()));
+                    table.ajax.reload(() => loadForm($('#diskon').val()))
                 })
                 .fail(errors => {
                     alert('Tidak dapat menyimpan data');
@@ -271,7 +274,7 @@
                         '_method': 'delete'
                     })
                     .done((response) => {
-                        table.ajax.reload(() => loadForm($('#diskon').val()));
+                        table.ajax.reload(() => loadForm($('#diskon').val()))
                     })
                     .fail((errors) => {
                         alert('Tidak dapat menghapus data');
@@ -302,14 +305,8 @@
                 })
         }
     </script>
-@endpush --}}
-@push('after-script')
-    <script>
-        function tampilProduk() {
-            $('#modal-produk').modal('show');
-        }
-    </script>
 @endpush
+
 
 @push('before-style')
     <style>
