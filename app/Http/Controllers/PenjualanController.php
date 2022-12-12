@@ -37,7 +37,7 @@ class PenjualanController extends Controller
             })
             ->addColumn('kode_member', function ($penjualan) {
                 $member = $penjualan->member->kode_member ?? '';
-                return '<span class="label label-success">' . $member . '</spa>';
+                return '<span class="badge badge-success">' . $member . '</span>';
             })
             ->editColumn('diskon', function ($penjualan) {
                 return $penjualan->diskon . '%';
@@ -105,7 +105,7 @@ class PenjualanController extends Controller
             ->of($detail)
             ->addIndexColumn()
             ->addColumn('kode_produk', function ($detail) {
-                return '<span class="label label-success">' . $detail->produk->kode_produk . '</span>';
+                return '<span class="badge badge-success">' . $detail->produk->kode_produk . '</span>';
             })
             ->addColumn('nama_produk', function ($detail) {
                 return $detail->produk->nama_produk;

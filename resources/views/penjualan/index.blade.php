@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    @includeIf('penjualan.detail')
+    @include('penjualan.detail')
 
 @endsection
 

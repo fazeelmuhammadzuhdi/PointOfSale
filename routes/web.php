@@ -79,3 +79,9 @@ Route::get('/transaksi/loadform/{diskon}/{total}/{diterima}', [PenjualanDetailCo
 
 Route::resource('/transaksi', PenjualanDetailController::class)
     ->except('create', 'show', 'edit');
+
+//Penjualan
+Route::get('/penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
+Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
+Route::get('/penjualan/{id}', [PenjualanController::class, 'show'])->name('penjualan.show');
+Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');

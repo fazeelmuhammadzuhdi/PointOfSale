@@ -127,54 +127,55 @@
         $(function() {
             $('body').addClass('sidebar-collapse');
             table = $('.table-penjualan').DataTable({
-                    responsive: true,
-                    processing: true,
-                    serverSide: true,
-                    autoWidth: false,
-                    ajax: {
-                        url: '{{ route('transaksi.data', $id_penjualan) }}',
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: {
+                    url: '{{ route('transaksi.data', $id_penjualan) }}',
+                },
+                columns: [{
+                        data: null,
+                        "sortable": false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
                     },
-                    columns: [{
-                            data: null,
-                            "sortable": false,
-                            render: function(data, type, row, meta) {
-                                return meta.row + meta.settings._iDisplayStart + 1;
-                            }
-                        },
-                        {
-                            data: 'kode_produk'
-                        },
-                        {
-                            data: 'nama_produk'
-                        },
-                        {
-                            data: 'harga_jual'
-                        },
-                        {
-                            data: 'jumlah'
-                        },
-                        {
-                            data: 'diskon'
-                        },
-                        {
-                            data: 'subtotal'
-                        },
-                        {
-                            data: 'aksi',
-                            searchable: false,
-                            sortable: false
-                        },
-                    ],
-                    dom: 'Brt',
-                    bSort: false,
-                    paginate: false
-                })
-                .on('draw.dt', function() {
-                    loadForm($('#diskon').val());
-                    setTimeout(() => {
-                        $('#diterima').trigger('input');
-                    }, 300);
-                });
+                    {
+                        data: 'kode_produk'
+                    },
+                    {
+                        data: 'nama_produk'
+                    },
+                    {
+                        data: 'harga_jual'
+                    },
+                    {
+                        data: 'jumlah'
+                    },
+                    {
+                        data: 'diskon'
+                    },
+                    {
+                        data: 'subtotal'
+                    },
+                    {
+                        data: 'aksi',
+                        searchable: false,
+                        sortable: false
+                    },
+                ],
+                dom: 'Brt',
+                bSort: false,
+                paginate: false
+            })
+            $(document).on('draw.dt', function() {
+                loadForm($('#diskon').val());
+                setTimeout(() => {
+                    $('#diterima').trigger('input');
+                }, 300);
+            });
+
             table2 = $('.table-produk').DataTable();
             $(document).on('input', '.quantity', function() {
                 let id = $(this).data('id');
@@ -196,7 +197,8 @@
                     })
                     .done(response => {
                         $(this).on('mouseout', function() {
-                            table.ajax.reload(() => loadForm($('#diskon').val()))
+                            table.DataTable().ajax.reload(() => loadForm($('#diskon').val()))
+                            // table.ajax.reload(() => loadForm($('#diskon').val()))
                         });
                     })
                     .fail(errors => {
@@ -242,7 +244,9 @@
             $.post('{{ route('transaksi.store') }}', $('.form-produk').serialize())
                 .done(response => {
                     $('#kode_produk').focus();
-                    table.ajax.reload(() => loadForm($('#diskon').val()))
+                    // table.ajax.reload(() => loadForm($('#diskon').val()))
+                    table.DataTable().ajax.reload(() => loadForm($('#diskon').val()))
+
                 })
                 .fail(errors => {
                     alert('Tidak dapat menyimpan data');
@@ -274,7 +278,9 @@
                         '_method': 'delete'
                     })
                     .done((response) => {
-                        table.ajax.reload(() => loadForm($('#diskon').val()))
+                        // table.ajax.reload(() => loadForm($('#diskon').val()))
+                        table.DataTable().ajax.reload(() => loadForm($('#diskon').val()))
+
                     })
                     .fail((errors) => {
                         alert('Tidak dapat menghapus data');
